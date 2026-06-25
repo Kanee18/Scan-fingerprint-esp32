@@ -1,0 +1,40 @@
+{
+  "rules": {
+    ".read": false,
+    ".write": false,
+
+    "devices": {
+      ".read": "auth != null",
+      "$deviceId": {
+        ".write": "auth != null",
+        "status": { ".validate": "newData.isString()" },
+        "mode": { ".validate": "newData.val() == 'idle' || newData.val() == 'attendance' || newData.val() == 'enroll'" }
+      }
+    },
+
+    "commands": {
+      ".read": "auth != null",
+      "$deviceId": {
+        ".read": "auth != null",
+        ".write": "auth != null"
+      }
+    },
+
+    "scans": {
+      ".read": "auth != null",
+      "$deviceId": {
+        ".read": "auth != null",
+        ".write": "auth != null",
+        ".indexOn": ["timestamp"]
+      }
+    },
+
+    "enroll_status": {
+      ".read": "auth != null",
+      "$deviceId": {
+        ".read": "auth != null",
+        ".write": "auth != null"
+      }
+    }
+  }
+}
