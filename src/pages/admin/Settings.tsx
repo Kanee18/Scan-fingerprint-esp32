@@ -36,9 +36,8 @@ export default function Settings() {
   }
   const toggleDay = (d: number) => {
     if (!settings) return
-    const active = settings.activeDays.includes(d)
-      ? settings.activeDays.filter((x) => x !== d)
-      : [...settings.activeDays, d].sort()
+    const current = settings.activeDays ?? []
+    const active = current.includes(d) ? current.filter((x) => x !== d) : [...current, d].sort()
     update({ activeDays: active })
   }
 
@@ -142,7 +141,7 @@ export default function Settings() {
                     key={d.value}
                     onClick={() => toggleDay(d.value)}
                     className={`touch-target rounded-xl px-3 py-2 text-sm font-medium transition ${
-                      settings.activeDays.includes(d.value) ? 'bg-brand-600 text-white' : 'bg-slate-100 text-slate-500'
+                      (settings.activeDays ?? []).includes(d.value) ? 'bg-brand-600 text-white' : 'bg-slate-100 text-slate-500'
                     }`}
                   >
                     {d.short}
@@ -162,7 +161,7 @@ export default function Settings() {
             </Button>
           </div>
           <div className="space-y-2">
-            {settings.periods.map((p, i) => (
+            {(settings.periods ?? []).map((p, i) => (
               <div key={i} className="flex items-center gap-2">
                 <span className="w-8 text-center text-sm font-semibold text-slate-400">{i + 1}</span>
                 <input className="input flex-1 py-2" value={p.label} onChange={(e) => updatePeriod(i, { label: e.target.value })} />
