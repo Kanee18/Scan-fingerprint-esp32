@@ -53,6 +53,10 @@ export interface Student {
   /** ID perangkat tempat sidik jari terdaftar */
   fingerprintDeviceId?: string | null
   active: boolean
+  /** Status siswa. Default dianggap 'aktif' bila kosong. */
+  status?: 'aktif' | 'lulus' | 'pindah' | 'keluar'
+  /** Tahun ajaran kelulusan (untuk alumni) */
+  graduatedYear?: string | null
   createdAt?: Timestamp | null
 }
 

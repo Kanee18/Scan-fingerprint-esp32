@@ -19,6 +19,7 @@ import TeacherReports from './pages/admin/TeacherReports'
 import Devices from './pages/admin/Devices'
 import UsersPage from './pages/admin/Users'
 import SettingsPage from './pages/admin/Settings'
+import Promotion from './pages/admin/Promotion'
 import WaliDashboard from './pages/wali/WaliDashboard'
 import NotFound from './pages/NotFound'
 
@@ -75,6 +76,7 @@ export default function App() {
         <Route path="/admin/teacher-reports" element={<ProtectedRoute roles={['admin']}><TeacherReports /></ProtectedRoute>} />
         <Route path="/admin/devices" element={<ProtectedRoute roles={['admin', 'operator']}><Devices /></ProtectedRoute>} />
         <Route path="/admin/users" element={<ProtectedRoute roles={['admin']}><UsersPage /></ProtectedRoute>} />
+        <Route path="/admin/promotion" element={<ProtectedRoute roles={['admin']}><Promotion /></ProtectedRoute>} />
         <Route path="/admin/settings" element={<ProtectedRoute roles={['admin']}><SettingsPage /></ProtectedRoute>} />
 
         <Route path="/wali" element={<ProtectedRoute roles={['wali_kelas', 'admin']}><WaliDashboard /></ProtectedRoute>} />

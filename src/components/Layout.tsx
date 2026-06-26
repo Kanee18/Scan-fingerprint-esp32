@@ -14,6 +14,7 @@ import {
   Mail,
   Cpu,
   UserCog,
+  ChevronsUp,
   Settings,
   Menu,
   X,
@@ -50,6 +51,7 @@ const NAV: NavItem[] = [
   { to: '/admin/teacher-reports', label: 'Rekap per Guru', icon: <Mail className="h-5 w-5" />, roles: ['admin'] },
   { to: '/admin/devices', label: 'Perangkat ESP32', icon: <Cpu className="h-5 w-5" />, roles: ['admin', 'operator'] },
   { to: '/admin/users', label: 'Pengguna', icon: <UserCog className="h-5 w-5" />, roles: ['admin'] },
+  { to: '/admin/promotion', label: 'Kenaikan Kelas', icon: <ChevronsUp className="h-5 w-5" />, roles: ['admin'] },
   { to: '/admin/settings', label: 'Pengaturan', icon: <Settings className="h-5 w-5" />, roles: ['admin'] },
 ]
 
