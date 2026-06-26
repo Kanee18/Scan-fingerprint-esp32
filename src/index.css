@@ -85,6 +85,24 @@
   }
 }
 
+/* Saat mencetak: sembunyikan navigasi & header, tampilkan hanya konten */
+@media print {
+  aside,
+  header {
+    display: none !important;
+  }
+  main {
+    padding: 0 !important;
+  }
+  body {
+    background: #fff;
+  }
+  .card {
+    box-shadow: none !important;
+    --tw-ring-color: transparent;
+  }
+}
+
 /* Animasi shimmer untuk skeleton */
 .shimmer {
   background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 37%, #f1f5f9 63%);

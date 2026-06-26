@@ -11,9 +11,11 @@ import Dashboard from './pages/admin/Dashboard'
 import Students from './pages/admin/Students'
 import Classes from './pages/admin/Classes'
 import Subjects from './pages/admin/Subjects'
+import Teachers from './pages/admin/Teachers'
 import Schedules from './pages/admin/Schedules'
 import Attendance from './pages/admin/Attendance'
 import Reports from './pages/admin/Reports'
+import TeacherReports from './pages/admin/TeacherReports'
 import Devices from './pages/admin/Devices'
 import UsersPage from './pages/admin/Users'
 import SettingsPage from './pages/admin/Settings'
@@ -66,9 +68,11 @@ export default function App() {
         <Route path="/admin/students" element={<ProtectedRoute roles={['admin']}><Students /></ProtectedRoute>} />
         <Route path="/admin/classes" element={<ProtectedRoute roles={['admin']}><Classes /></ProtectedRoute>} />
         <Route path="/admin/subjects" element={<ProtectedRoute roles={['admin']}><Subjects /></ProtectedRoute>} />
+        <Route path="/admin/teachers" element={<ProtectedRoute roles={['admin']}><Teachers /></ProtectedRoute>} />
         <Route path="/admin/schedules" element={<ProtectedRoute roles={['admin']}><Schedules /></ProtectedRoute>} />
         <Route path="/admin/attendance" element={<ProtectedRoute roles={['admin']}><Attendance /></ProtectedRoute>} />
         <Route path="/admin/reports" element={<ProtectedRoute roles={['admin']}><Reports /></ProtectedRoute>} />
+        <Route path="/admin/teacher-reports" element={<ProtectedRoute roles={['admin']}><TeacherReports /></ProtectedRoute>} />
         <Route path="/admin/devices" element={<ProtectedRoute roles={['admin', 'operator']}><Devices /></ProtectedRoute>} />
         <Route path="/admin/users" element={<ProtectedRoute roles={['admin']}><UsersPage /></ProtectedRoute>} />
         <Route path="/admin/settings" element={<ProtectedRoute roles={['admin']}><SettingsPage /></ProtectedRoute>} />

@@ -13,9 +13,10 @@ import {
   Settings2,
   ScanLine,
 } from 'lucide-react'
-import { db, DEFAULT_DEVICE_ID } from '../lib/firebase'
+import { db } from '../lib/firebase'
 import { useAuth } from '../contexts/AuthContext'
-import { useDeviceState, useScans } from '../hooks/useDevice'
+import { useDeviceState, useDevicesList, useScans } from '../hooks/useDevice'
+import { useDeviceId } from '../hooks/useDeviceId'
 import { setDeviceMode, simulateScan } from '../services/devices'
 import { getStudentByFingerprint } from '../services/students'
 import { recordFingerprintAttendance } from '../services/attendance'
@@ -50,8 +51,9 @@ export default function Kiosk() {
   const { profile, logout } = useAuth()
   const navigate = useNavigate()
   const now = useNow()
-  const [deviceId] = useState(DEFAULT_DEVICE_ID)
+  const [deviceId, setDeviceId] = useDeviceId()
   const { device, isOnline } = useDeviceState(deviceId)
+  const { devices } = useDevicesList()
   const scans = useScans(deviceId, 10)
 
   const [settings, setSettings] = useState<SchoolSettings | null>(null)
@@ -90,7 +92,7 @@ export default function Kiosk() {
       setProcessing(true)
       const time = formatTime()
       try {
-        const student = await getStudentByFingerprint(fingerprintId)
+        const student = await getStudentByFingerprint(fingerprintId, deviceId)
         if (!student) {
           showResult({ type: 'unknown', time, message: `Sidik jari #${fingerprintId} tidak dikenali.` })
           return
@@ -203,6 +205,23 @@ export default function Kiosk() {
           <p className="text-sm text-white/60">{formatDateID(now)}</p>
         </div>
         <div className="flex items-center gap-3">
+          {devices.length > 1 && (
+            <select
+              value={deviceId}
+              onChange={(e) => setDeviceId(e.target.value)}
+              className="rounded-full bg-white/10 px-3 py-1.5 text-xs font-semibold text-white/80 focus:outline-none"
+              title="Pilih perangkat / kelas"
+            >
+              <option className="text-slate-800" value={deviceId}>
+                {deviceId}
+              </option>
+              {devices.filter((d) => d.id !== deviceId).map((d) => (
+                <option key={d.id} className="text-slate-800" value={d.id}>
+                  {d.name ? `${d.name} (${d.id})` : d.id}
+                </option>
+              ))}
+            </select>
+          )}
           <div
             className={cn(
               'flex items-center gap-2 rounded-full px-3 py-1.5 text-xs font-semibold',

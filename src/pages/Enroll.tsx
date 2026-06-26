@@ -11,10 +11,10 @@ import {
   FlaskConical,
   XCircle,
 } from 'lucide-react'
-import { DEFAULT_DEVICE_ID } from '../lib/firebase'
 import { useAuth } from '../contexts/AuthContext'
 import { useCollection } from '../hooks/useFirestore'
-import { useDeviceState, useEnrollStatus } from '../hooks/useDevice'
+import { useDeviceState, useDevicesList, useEnrollStatus } from '../hooks/useDevice'
+import { useDeviceId } from '../hooks/useDeviceId'
 import { clearCommand, requestDeleteFingerprint, requestEnroll } from '../services/devices'
 import { allocateFingerprintId, clearFingerprint, setFingerprint } from '../services/students'
 import { useToast } from '../contexts/ToastContext'
@@ -39,8 +39,9 @@ export default function Enroll() {
   const { profile } = useAuth()
   const toast = useToast()
   const confirm = useConfirm()
-  const [deviceId] = useState(DEFAULT_DEVICE_ID)
+  const [deviceId, setDeviceId] = useDeviceId()
   const { isOnline } = useDeviceState(deviceId)
+  const { devices } = useDevicesList()
   const enrollStatus = useEnrollStatus(deviceId)
 
   const [grade, setGrade] = useState('')
@@ -105,7 +106,7 @@ export default function Enroll() {
 
   const startEnroll = async (student: Student) => {
     try {
-      const fid = await allocateFingerprintId()
+      const fid = await allocateFingerprintId(deviceId)
       allocatedId.current = fid
       handled.current = false
       setTarget(student)
@@ -168,6 +169,21 @@ export default function Enroll() {
       />
 
       <Card className="mb-4 p-4">
+        <div className="mb-3">
+          <Select
+            label="Perangkat (alat tempat sidik jari disimpan)"
+            value={deviceId}
+            onChange={(e) => setDeviceId(e.target.value)}
+            hint="Daftarkan siswa pada alat kelasnya. Slot template tersimpan di sensor alat ini."
+          >
+            <option value={deviceId}>{deviceId}</option>
+            {devices.filter((d) => d.id !== deviceId).map((d) => (
+              <option key={d.id} value={d.id}>
+                {d.name ? `${d.name} (${d.id})` : d.id}
+              </option>
+            ))}
+          </Select>
+        </div>
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
           <Select label="Tingkat" value={grade} onChange={(e) => { setGrade(e.target.value); setClassId('') }}>
             <option value="">Semua tingkat</option>

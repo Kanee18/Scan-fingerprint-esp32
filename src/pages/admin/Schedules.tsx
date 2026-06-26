@@ -9,7 +9,7 @@ import { useConfirm } from '../../contexts/ConfirmContext'
 import { Button, Card, EmptyState, Modal, PageHeader, Select } from '../../components/ui'
 import { DAYS } from '../../lib/constants'
 import { cn } from '../../lib/utils'
-import type { PeriodConfig, Schedule, SchoolClass, SchoolSettings, Subject } from '../../lib/types'
+import type { PeriodConfig, Schedule, SchoolClass, SchoolSettings, Subject, Teacher } from '../../lib/types'
 
 function scheduleId(classId: string, day: number, period: number) {
   return `${classId}_${day}_${period}`
@@ -20,6 +20,7 @@ export default function Schedules() {
   const confirm = useConfirm()
   const { data: classes } = useCollection<SchoolClass>('classes', [orderBy('name')])
   const { data: subjects } = useCollection<Subject>('subjects', [orderBy('name')])
+  const { data: teachers } = useCollection<Teacher>('teachers', [orderBy('name')])
   const [settings, setSettings] = useState<SchoolSettings | null>(null)
   const [classId, setClassId] = useState('')
 
@@ -47,13 +48,19 @@ export default function Schedules() {
   // ---- Cell editor ----
   const [editCell, setEditCell] = useState<{ day: number; period: PeriodConfig } | null>(null)
   const [subjectId, setSubjectId] = useState('')
-  const [teacherName, setTeacherName] = useState('')
+  const [teacherId, setTeacherId] = useState('')
   const [saving, setSaving] = useState(false)
+
+  // Guru yang relevan untuk mapel terpilih (yang mengampu mapel itu), fallback semua guru
+  const teacherOptions = useMemo(() => {
+    const matched = teachers.filter((t) => (t.subjectIds ?? []).includes(subjectId))
+    return matched.length > 0 ? matched : teachers
+  }, [teachers, subjectId])
 
   const openCell = (day: number, period: PeriodConfig) => {
     const existing = map.get(`${day}_${period.period}`)
     setSubjectId(existing?.subjectId ?? '')
-    setTeacherName(existing?.teacherName ?? '')
+    setTeacherId(existing?.teacherId ?? '')
     setEditCell({ day, period })
   }
 
@@ -64,6 +71,7 @@ export default function Schedules() {
     }
     const subj = subjects.find((s) => s.id === subjectId)
     if (!subj) return
+    const teacher = teachers.find((t) => t.id === teacherId)
     setSaving(true)
     try {
       const id = scheduleId(classId, editCell.day, editCell.period.period)
@@ -77,8 +85,8 @@ export default function Schedules() {
           period: editCell.period.period,
           subjectId: subj.id,
           subjectName: subj.name,
-          teacherId: null,
-          teacherName: teacherName || null,
+          teacherId: teacher?.id ?? null,
+          teacherName: teacher?.name ?? null,
         },
         false,
       )
@@ -201,10 +209,17 @@ export default function Schedules() {
               </option>
             ))}
           </Select>
-          <div>
-            <label className="label">Guru Pengampu (opsional)</label>
-            <input className="input" value={teacherName} onChange={(e) => setTeacherName(e.target.value)} placeholder="mis. Pak Budi" />
-          </div>
+          <Select label="Guru Pengampu" value={teacherId} onChange={(e) => setTeacherId(e.target.value)} disabled={!subjectId}>
+            <option value="">— Belum ditentukan —</option>
+            {teacherOptions.map((t) => (
+              <option key={t.id} value={t.id}>
+                {t.name}
+              </option>
+            ))}
+          </Select>
+          {subjectId && teacherOptions.length === 0 && (
+            <p className="text-xs text-amber-600">Belum ada guru. Tambahkan di menu Data Guru.</p>
+          )}
         </div>
       </Modal>
     </div>

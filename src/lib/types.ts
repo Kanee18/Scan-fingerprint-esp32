@@ -63,6 +63,19 @@ export interface Subject {
   createdAt?: Timestamp | null
 }
 
+export interface Teacher {
+  id: string
+  name: string
+  nip?: string
+  /** Email untuk pengiriman rekap absensi bulanan */
+  email: string
+  phone?: string
+  /** ID mata pelajaran yang diampu */
+  subjectIds: string[]
+  active: boolean
+  createdAt?: Timestamp | null
+}
+
 export interface Schedule {
   id: string
   classId: string

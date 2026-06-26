@@ -8,7 +8,7 @@ import { useToast } from '../../contexts/ToastContext'
 import { useConfirm } from '../../contexts/ConfirmContext'
 import { Badge, Button, Card, EmptyState, Input, Modal, PageHeader, Select } from '../../components/ui'
 import { GRADES, MAJORS, DEFAULT_SETTINGS } from '../../lib/constants'
-import type { Grade, Major, SchoolClass, UserProfile } from '../../lib/types'
+import type { Grade, Major, SchoolClass, Teacher } from '../../lib/types'
 
 interface FormState {
   grade: Grade
@@ -24,7 +24,7 @@ export default function Classes() {
   const toast = useToast()
   const confirm = useConfirm()
   const { data: classes, loading } = useCollection<SchoolClass>('classes', [orderBy('name')])
-  const { data: teachers } = useCollection<UserProfile>('users', [])
+  const { data: teachers } = useCollection<Teacher>('teachers', [orderBy('name')])
 
   const [gradeF, setGradeF] = useState('')
   const [search, setSearch] = useState('')
@@ -33,8 +33,7 @@ export default function Classes() {
   const [form, setForm] = useState<FormState>(EMPTY)
   const [saving, setSaving] = useState(false)
 
-  const wali = teachers.filter((t) => t.role === 'wali_kelas')
-  const teacherName = (uid?: string | null) => teachers.find((t) => t.uid === uid)?.name
+  const teacherName = (id?: string | null) => teachers.find((t) => t.id === id)?.name
 
   const filtered = useMemo(() => {
     const s = search.toLowerCase()
@@ -233,12 +232,15 @@ export default function Classes() {
             onChange={(e) => setForm({ ...form, homeroomTeacherId: e.target.value })}
           >
             <option value="">— Tidak ada —</option>
-            {wali.map((w) => (
-              <option key={w.uid} value={w.uid}>
-                {w.name}
+            {teachers.map((t) => (
+              <option key={t.id} value={t.id}>
+                {t.name}
               </option>
             ))}
           </Select>
+          {teachers.length === 0 && (
+            <p className="text-xs text-amber-600">Belum ada data guru. Tambahkan di menu Data Guru terlebih dahulu.</p>
+          )}
         </div>
       </Modal>
     </div>
